@@ -44,6 +44,7 @@ export default class ViewTransformer extends React.Component {
         onSingleTapConfirmed: PropTypes.func,
         onLayout: PropTypes.func,
         children: PropTypes.node,
+        containerStyle: PropTypes.shape({}),
     };
 
     static defaultProps = {
@@ -54,7 +55,8 @@ export default class ViewTransformer extends React.Component {
         maxScale: 1,
         enableResistance: false,
         resistantStrHorizontal: (dx) => (dx /= 3),
-        resistantStrVertical: (dy) => (dy /= 3)
+        resistantStrVertical: (dy) => (dy /= 3),
+        containerStyle: {},
     };
 
     constructor (props) {
@@ -157,6 +159,7 @@ export default class ViewTransformer extends React.Component {
     }
 
     render () {
+        const { containerStyle, ...props } = this.props;
         let gestureResponder = this.gestureResponder;
         if (!this.props.enableTransform) {
             gestureResponder = {};
@@ -165,19 +168,19 @@ export default class ViewTransformer extends React.Component {
         return (
             <View
                 style={{flex: 1}}
-                {...this.props}
+                {...props}
                 {...gestureResponder}
                 ref={(component) => (this.innerViewRef = component)}
                 onLayout={this.onLayout}>
                 <View
-                    style={{
+                    style={[{
                         flex: 1,
                         transform: [
                             { scale: this.state.scale },
                             { translateX: this.state.translateX },
                             { translateY: this.state.translateY }
                         ]
-                    }}
+                    }, containerStyle]}
                 >
                     { this.props.children }
                 </View>
